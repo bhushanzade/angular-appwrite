@@ -1,0 +1,46 @@
+<div
+  id="default-modal"
+  tabindex="-1"
+  [class.hidden]="!isOpen"
+  class="h-100vh fixed left-0 right-0 top-0 z-50 flex max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-900 bg-opacity-75 md:inset-0"
+>
+  <div class="relative max-h-full w-full max-w-2xl p-4">
+    <!-- Modal content -->
+    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+      <!-- Modal header -->
+      @if (isHeader) {
+        <div
+          class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600"
+        >
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Terms of Service
+          </h3>
+          <button
+            type="button"
+            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+            data-modal-hide="default-modal"
+            (click)="close.emit()"
+          >
+            <svg
+              class="h-3 w-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+      }
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
