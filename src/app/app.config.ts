@@ -20,6 +20,9 @@ import { ProfileEffects } from './store/profile/profile.effects';
 import { provideToastr } from 'ngx-toastr';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { AppwriteDBService } from './services/appwrite-db.service';
+import { ProjectEffects } from './store/project/project.effects';
+import { projectReducer } from './store/project/project.reducer';
 
 const firebase = {
   apiKey: 'AIzaSyBQZR-YX5josEPndm2pgSXIuH7RFM5ZlV8',
@@ -39,8 +42,9 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       auth: authReducer,
       profile: profileReducer,
+      project: projectReducer,
     }),
-    provideEffects([AuthEffects, ProfileEffects]),
+    provideEffects([AuthEffects, ProfileEffects, ProjectEffects]),
     provideFirestore(() => getFirestore()),
     provideFirebaseApp(() => initializeApp(firebase)),
     provideStorage(() => getStorage()),
@@ -48,5 +52,6 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideToastr(),
     provideAnimations(),
+    AppwriteDBService,
   ],
 };

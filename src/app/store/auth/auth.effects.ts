@@ -2,22 +2,22 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
-import { FireAuthService } from '../../services/fireauth.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthActions } from './auth.action';
+import { AppWriteAuthService } from '../../services/appwrite-auth.service';
 
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
-  private fireauth = inject(FireAuthService);
+  private auth = inject(AppWriteAuthService);
   private router = inject(Router);
 
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
       switchMap(({ email, password }) =>
-        this.fireauth
+        this.auth
           .signInWithEmailAndPassword(email, password)
           .then((res) => {
             return AuthActions.loginSuccess({ data: res });
@@ -33,7 +33,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.googleLogin),
       switchMap(() =>
-        this.fireauth
+        this.auth
           .loginWithGoogle()
           .then((res) => {
             return AuthActions.loginSuccess({ data: res });
@@ -49,7 +49,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.register),
       switchMap(({ name, email, password }) =>
-        this.fireauth
+        this.auth
           .signUpWithEmailAndPassword(name, email, password)
           .then((res) => {
             return AuthActions.registerSuccess({ data: res });
@@ -66,7 +66,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.logout),
         map(async () => {
-          await this.fireauth.signOut();
+          await this.auth.signOut();
           this.router.navigateByUrl('/');
           return AuthActions.logout();
         }),
@@ -77,19 +77,15 @@ export class AuthEffects {
   checkAuth$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.checkAuth),
-      mergeMap(() => {
-        return this.fireauth.checkAuthState().pipe(
-          mergeMap(async (user) => {
-            const userData = await user;
-            if (userData) {
-              return AuthActions.loginSuccess({ data: userData });
-            }
-            return AuthActions.noAuth();
-          }),
-          catchError((error) => {
-            return of(AuthActions.loginFailure({ error: error.message }));
-          }),
-        );
+      mergeMap(async () => {
+        const userData = await this.auth.checkAuthState();
+        if (userData) {
+          return AuthActions.loginSuccess({ data: userData });
+        }
+        return AuthActions.noAuth();
+      }),
+      catchError((error) => {
+        return of(AuthActions.loginFailure({ error: error.message }));
       }),
     ),
   );

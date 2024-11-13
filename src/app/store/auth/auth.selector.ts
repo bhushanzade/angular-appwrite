@@ -5,7 +5,6 @@ const authState = createFeatureSelector<AuthState>('auth');
 
 export const getAuth = createSelector(authState, (state) => state);
 export const getUser = createSelector(authState, (state) => state.user);
-export const getToken = createSelector(authState, (state) => state.token);
 export const getIsAuthLoading = createSelector(
   authState,
   (state) => state.loading,

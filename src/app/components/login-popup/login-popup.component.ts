@@ -35,10 +35,10 @@ export class LoginPopupComponent {
 
   ngOnInit() {
     this.store.select(getAuth).subscribe((auth) => {
-      if (auth.token) {
+      if (auth.user) {
         this.close.emit();
       } else if (auth.error) {
-        this.errorMsg = auth.error?.message ?? 'Invalid Credentials';
+        this.errorMsg = auth.error ?? 'Invalid Credentials';
       }
       this.loginLoader = false;
     });

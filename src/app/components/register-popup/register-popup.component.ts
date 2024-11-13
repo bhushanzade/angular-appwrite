@@ -36,7 +36,7 @@ export class RegisterPopupComponent {
 
   ngOnInit() {
     this.store.select(getAuth).subscribe((auth) => {
-      if (auth.token) {
+      if (auth.user) {
         this.close.emit();
       } else if (auth.error) {
         this.errorMsg = auth.error ?? 'Invalid Credentials';

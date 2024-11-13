@@ -40,7 +40,7 @@ export class ProfileEditComponent {
   reactiveForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    mobile: new FormControl('', [
+    phone: new FormControl('', [
       Validators.required,
       Validators.pattern('^[0-9]{10}$'),
     ]),
@@ -68,7 +68,7 @@ export class ProfileEditComponent {
         this.reactiveForm.setValue({
           name: user?.name ?? '',
           email: user?.email ?? '',
-          mobile: user?.mobile ?? '',
+          phone: user?.phone ?? '',
           gender: user?.gender ?? '',
           age: user?.age ?? '',
           profileSummary: user?.profileSummary ?? '',
@@ -88,7 +88,7 @@ export class ProfileEditComponent {
         this.reactiveForm.setValue({
           name: user?.name ?? '',
           email: user?.email ?? '',
-          mobile: user?.mobile ?? '',
+          phone: user?.phone ?? '',
           gender: user?.gender ?? '',
           age: user?.age ?? '',
           profileSummary: user?.profileSummary ?? '',
