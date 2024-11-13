@@ -1,5 +1,26 @@
 # Appwrite
 
+### Installation
+
+```
+npm i appwrite
+```
+
+### Setup
+
+```
+// appwrite.ts
+import { Client, Account, Databases } from 'appwrite';
+
+export const client = new Client();
+
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject('PROJECT_ID');
+
+export const account = new Account(client);
+export const databases = new Databases(client);
+export { ID } from 'appwrite';
+```
+
 #### Limits
 
 - Only 75000 users can registered per organization
