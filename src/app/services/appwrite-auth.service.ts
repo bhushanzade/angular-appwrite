@@ -15,7 +15,7 @@ export class AppWriteAuthService {
   ): Promise<any> {
     const res = await account.create(ID.unique(), email, password, name);
     await this.appwrite.createDocument<any>(
-      '67348e7f0030d5201c3a',
+      'users',
       {
         name,
         email,
@@ -34,8 +34,8 @@ export class AppWriteAuthService {
   ): Promise<any> {
     await account.createEmailPasswordSession(email, password);
     const res = await account.get();
-    console.log('res', res);
-    return this.setUserWithToken(res);
+    const user = await this.appwrite.getDocument('users', res.$id);
+    return this.setUserWithToken(user);
   }
 
   async loginWithGoogle(): Promise<any> {
@@ -43,6 +43,7 @@ export class AppWriteAuthService {
   }
 
   async signOut(): Promise<void> {
+    await account.deleteSession('current');
     return;
   }
 
@@ -53,7 +54,8 @@ export class AppWriteAuthService {
   async checkAuthState() {
     try {
       const res = await account.get();
-      return this.setUserWithToken(res);
+      const user = await this.appwrite.getDocument('users', res.$id);
+      return this.setUserWithToken(user);
     } catch (error) {
       return null;
     }

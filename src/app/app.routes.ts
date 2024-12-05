@@ -56,6 +56,13 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'chat/:userId',
+        loadComponent: () =>
+          import('./pages/chat-messages/chat-messages.component').then(
+            (m) => m.ChatMessagesComponent,
+          ),
+      },
     ],
   },
 ];

@@ -1,0 +1,66 @@
+@if (loadingData) {
+  <ng-content />
+} @else {
+  <div class="mt-5">
+    @for (item of projects; track $index) {
+      <div class="mb-5 rounded-md bg-slate-200 p-5">
+        <h3 class="mb-0.5 text-2xl font-medium">{{ item.name }}</h3>
+        <p class="mb-1 text-sm font-normal text-gray-800">
+          {{ item.user.name }}
+        </p>
+        <p class="mb-4 text-sm font-normal text-gray-800">
+          {{ item.content }}
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <button
+            class="transform rounded bg-blue-400 px-4 py-2 font-medium uppercase text-white shadow transition hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg"
+            (click)="editProject(item.$id)"
+          >
+            Edit
+          </button>
+          <button
+            class="flex transform items-center rounded bg-amber-600 px-4 py-2 font-medium uppercase text-white shadow transition hover:-translate-y-0.5 hover:bg-amber-700 hover:shadow-lg"
+            (click)="deleteProject(item.$id, $index)"
+            [disabled]="item.loading"
+          >
+            Delete
+            @if (item.loading) {
+              <!-- Loader in tailwind css -->
+              <span class="ml-5">
+                <svg
+                  class="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<div>
+  <app-pagination
+    [totalCount]="total"
+    [limit]="pageSize"
+    (pageChange)="pageChange($event)"
+  />
+</div>

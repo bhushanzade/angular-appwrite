@@ -24,4 +24,5 @@ export const AuthActions = {
   checkAuth: createAction('[Auth] Check Auth'),
   noAuth: createAction('[Auth] No Auth Set'),
   logout: createAction('[Auth] Logout'),
+  logoutSuccess: createAction('[Auth] Logout Success'),
 };

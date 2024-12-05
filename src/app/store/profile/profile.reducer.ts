@@ -32,4 +32,8 @@ export const profileReducer = createReducer(
     ...state,
     error,
   })),
+  on(ProfileActions.updateProfilePicFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
 );

@@ -15,7 +15,7 @@ import {
   getProfileUser,
 } from '../../../store/profile/profile.selector';
 import { getUser } from '../../../store/auth/auth.selector';
-import { FirestoreService } from '../../../services/firestore.service';
+import { AppwriteDBService } from '../../../services/appwrite-db.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -30,9 +30,10 @@ import { FirestoreService } from '../../../services/firestore.service';
   styleUrl: './profile-edit.component.scss',
 })
 export class ProfileEditComponent {
-  staticPhoto: string =
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
-  picture: any = this.staticPhoto;
+  private store = inject(Store);
+  private appWriteDB = inject(AppwriteDBService);
+
+  picture: any = this.appWriteDB.staticPhoto;
   id = '';
   loading = false;
   selectedImage: File | null = null;
@@ -56,50 +57,19 @@ export class ProfileEditComponent {
     return this.reactiveForm.controls;
   }
 
-  private store = inject(Store);
-  private firestore = inject(FirestoreService);
-
   ngOnInit() {
     this.store.select(getUser).subscribe((user) => {
       if (user) {
         this.user = user;
         this.store.dispatch(ProfileActions.profile({ id: user.id }));
         this.id = user.id;
-        this.reactiveForm.setValue({
-          name: user?.name ?? '',
-          email: user?.email ?? '',
-          phone: user?.phone ?? '',
-          gender: user?.gender ?? '',
-          age: user?.age ?? '',
-          profileSummary: user?.profileSummary ?? '',
-          designation: user?.designation ?? '',
-          education: user?.education ?? '',
-          location: user?.location ?? '',
-        });
-        this.reactiveForm.updateValueAndValidity();
-        if (user.pic) {
-          this.picture = user.pic;
-        }
+        this.bindReactiveForm(user);
       }
     });
 
     this.store.select(getProfileUser).subscribe((user) => {
       if (user) {
-        this.reactiveForm.setValue({
-          name: user?.name ?? '',
-          email: user?.email ?? '',
-          phone: user?.phone ?? '',
-          gender: user?.gender ?? '',
-          age: user?.age ?? '',
-          profileSummary: user?.profileSummary ?? '',
-          designation: user?.designation ?? '',
-          education: user?.education ?? '',
-          location: user?.location ?? '',
-        });
-        this.reactiveForm.updateValueAndValidity();
-        if (user.pic) {
-          this.picture = user.pic;
-        }
+        this.bindReactiveForm(user);
       }
       this.loading = false;
     });
@@ -107,6 +77,24 @@ export class ProfileEditComponent {
     this.store.select(getProfileError).subscribe(() => {
       this.loading = false;
     });
+  }
+
+  bindReactiveForm(user: any) {
+    this.reactiveForm.setValue({
+      name: user?.name ?? '',
+      email: user?.email ?? '',
+      phone: user?.phone ?? '',
+      gender: user?.gender ?? '',
+      age: user?.age ?? '',
+      profileSummary: user?.profileSummary ?? '',
+      designation: user?.designation ?? '',
+      education: user?.education ?? '',
+      location: user?.location ?? '',
+    });
+    this.reactiveForm.updateValueAndValidity();
+    if (user.pic) {
+      this.picture = this.appWriteDB.getFileUrl(user.pic, 'test-storage');
+    }
   }
 
   onFileSelected(event: any): void {
@@ -141,15 +129,18 @@ export class ProfileEditComponent {
 
   changePicture() {
     if (this.selectedImage && this.id) {
-      const path = 'profile/' + this.id + '/' + this.selectedImage.name;
-      this.firestore.uploadFile(this.selectedImage, path).subscribe((res) => {
-        console.log('uploadFile res', res);
-      });
+      this.store.dispatch(
+        ProfileActions.updateProfilePic({
+          uid: this.id,
+          storageId: 'test-storage',
+          file: this.selectedImage,
+        }),
+      );
     }
   }
 
   resetPicture() {
     this.selectedImage = null;
-    this.picture = this.user?.pic ?? this.staticPhoto;
+    this.picture = this.user?.pic ?? this.appWriteDB.staticPhoto;
   }
 }

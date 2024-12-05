@@ -1,6 +1,8 @@
 <div>
   <div class="flex justify-between">
-    <h1 class="text-4xl font-medium text-gray-700">Projects ({{ total }})</h1>
+    <h1 class="text-4xl font-medium text-gray-700">
+      Projects ({{ ($projects | async)?.total }})
+    </h1>
     <button
       class="transform rounded bg-blue-400 px-4 py-2 font-medium uppercase text-white shadow transition hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg"
       (click)="addProject()"
@@ -9,54 +11,39 @@
     </button>
   </div>
 
-  <div class="mt-5">
-    @for (item of projects; track $index) {
-      <div class="bg-slate-400 p-5">
-        <h3 class="mb-0.5 text-2xl font-medium">{{ item.name }}</h3>
-        <p class="mb-4 text-sm font-normal text-gray-800">
-          {{ item.content }}
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <button
-            class="transform rounded bg-blue-400 px-4 py-2 font-medium uppercase text-white shadow transition hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-lg"
-            (click)="editProject(item.$id)"
-          >
-            Edit
-          </button>
-          <button
-            class="flex transform items-center rounded bg-amber-600 px-4 py-2 font-medium uppercase text-white shadow transition hover:-translate-y-0.5 hover:bg-amber-700 hover:shadow-lg"
-            (click)="deleteProject(item.$id, $index)"
-            [disabled]="item.loading"
-          >
-            Delete
-            @if (item.loading) {
-              <!-- Loader in tailwind css -->
-              <span class="ml-5">
-                <svg
-                  class="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  ></circle>
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              </span>
-            }
-          </button>
-        </div>
+  @defer {
+    <app-list-projects>
+      <ng-container [ngTemplateOutlet]="placeholder" />
+    </app-list-projects>
+  } @placeholder {
+    <ng-container [ngTemplateOutlet]="placeholder" />
+  } @loading {
+    <ng-container [ngTemplateOutlet]="placeholder" />
+  } @error {
+    <div class="flex items-center justify-center">
+      <div class="flex items-center justify-center gap-2">
+        <span
+          class="h-5 w-5 animate-spin rounded-full border-2 border-gray-900 border-t-transparent"
+        ></span>
+        <span>Loading...</span>
       </div>
-    }
-  </div>
+    </div>
+  }
 </div>
+
+<ng-template #placeholder>
+  <ng-container [ngTemplateOutlet]="loading" /><br />
+  <ng-container [ngTemplateOutlet]="loading" /><br />
+  <ng-container [ngTemplateOutlet]="loading" />
+</ng-template>
+
+<ng-template #loading>
+  <div class="animate-pulse rounded-lg bg-white p-4 shadow-md">
+    <!-- Header -->
+    <div class="mb-2 h-4 w-2/3 rounded bg-gray-300"></div>
+    <!-- Body -->
+    <div class="mb-2 h-8 w-full rounded bg-gray-300"></div>
+    <div class="mb-2 h-8 w-full rounded bg-gray-300"></div>
+    <div class="h-8 w-1/2 rounded bg-gray-300"></div>
+  </div>
+</ng-template>

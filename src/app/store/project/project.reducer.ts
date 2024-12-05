@@ -6,6 +6,9 @@ export interface ProjectState {
   projects: {
     documents: any[];
     total: number;
+    currentPage: number;
+    limit: number;
+    offset: number;
   };
   project: any;
   error: any;
@@ -16,6 +19,9 @@ export const initialProjectState: ProjectState = {
   projects: {
     documents: [],
     total: 0,
+    currentPage: 1,
+    limit: 5,
+    offset: 0,
   },
   project: null,
   error: null,
@@ -81,6 +87,9 @@ export const projectReducer = createReducer(
         (project) => project.$id !== id,
       ),
       total: state.projects.total - 1,
+      currentPage: state.projects.currentPage,
+      limit: state.projects.limit,
+      offset: state.projects.offset,
     },
     project: null,
     error: null,

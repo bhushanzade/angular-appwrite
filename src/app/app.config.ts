@@ -1,9 +1,10 @@
 import {
   ApplicationConfig,
+  ErrorHandler,
   isDevMode,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -23,6 +24,11 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { AppwriteDBService } from './services/appwrite-db.service';
 import { ProjectEffects } from './store/project/project.effects';
 import { projectReducer } from './store/project/project.reducer';
+import { ErrorHandlerService } from './error-handler.interceptor';
+import { userReducer } from './store/user/user.reducer';
+import { UserEffects } from './store/user/user.effects';
+import { messageReducer } from './store/message/message.reducer';
+import { MessageEffects } from './store/message/message.effects';
 
 const firebase = {
   apiKey: 'AIzaSyBQZR-YX5josEPndm2pgSXIuH7RFM5ZlV8',
@@ -37,14 +43,22 @@ const firebase = {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideClientHydration(),
     provideStore({
       auth: authReducer,
       profile: profileReducer,
       project: projectReducer,
+      user: userReducer,
+      message: messageReducer,
     }),
-    provideEffects([AuthEffects, ProfileEffects, ProjectEffects]),
+    provideEffects([
+      AuthEffects,
+      ProfileEffects,
+      ProjectEffects,
+      UserEffects,
+      MessageEffects,
+    ]),
     provideFirestore(() => getFirestore()),
     provideFirebaseApp(() => initializeApp(firebase)),
     provideStorage(() => getStorage()),
@@ -53,5 +67,6 @@ export const appConfig: ApplicationConfig = {
     provideToastr(),
     provideAnimations(),
     AppwriteDBService,
+    { provide: ErrorHandler, useClass: ErrorHandlerService },
   ],
 };

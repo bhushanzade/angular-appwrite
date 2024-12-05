@@ -15,6 +15,7 @@
           class="h-36 w-36 cursor-pointer rounded-full object-cover"
           [src]="picture"
           alt="User profile picture"
+          (click)="fileInput.click()"
         />
       </div>
       <div class="flex-grow">
@@ -23,7 +24,7 @@
         </h2>
         <p class="text-sm text-gray-600">{{ f["designation"].value }}</p>
         <p class="text-sm text-gray-600">{{ f["education"].value }}</p>
-        <!-- @if (selectedImage) {
+        @if (selectedImage) {
           <div class="flex gap-2">
             <button
               class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
@@ -38,7 +39,7 @@
               Reset Picture
             </button>
           </div>
-        } -->
+        }
       </div>
     </div>
   </div>

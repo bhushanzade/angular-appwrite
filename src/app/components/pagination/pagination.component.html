@@ -1,0 +1,35 @@
+<!-- Pagination controls -->
+<div class="mt-4 flex items-center justify-center space-x-2">
+  <!-- Previous Set Button -->
+  <button
+    (click)="goToPreviousSet()"
+    [disabled]="currentPage === 1"
+    class="rounded-md bg-gray-300 px-4 py-2 text-gray-600 hover:bg-gray-400 disabled:opacity-50"
+  >
+    Previous Set
+  </button>
+
+  <!-- Page buttons -->
+  <div class="flex space-x-1">
+    @for (page of pages; track $index) {
+      <button
+        [class.bg-blue-500]="page === currentPage"
+        [class.text-white]="page === currentPage"
+        [class.bg-gray-300]="page !== currentPage"
+        (click)="changePage(page)"
+        class="rounded-md px-4 py-2 hover:bg-blue-400"
+      >
+        {{ page }}
+      </button>
+    }
+  </div>
+
+  <!-- Next Set Button -->
+  <button
+    (click)="goToNextSet()"
+    [disabled]="currentPage === totalPages"
+    class="rounded-md bg-gray-300 px-4 py-2 text-gray-600 hover:bg-gray-400 disabled:opacity-50"
+  >
+    Next Set
+  </button>
+</div>

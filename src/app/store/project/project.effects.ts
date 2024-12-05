@@ -15,9 +15,9 @@ export class ProjectEffects {
   fetch$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProjectActions.fetch),
-      switchMap(() =>
+      switchMap(({ limit, offset }) =>
         this.appwrite
-          .getCollection('projects')
+          .getCollection('projects', limit, offset)
           .then((res) => {
             return ProjectActions.fetchSuccess({ data: res });
           })

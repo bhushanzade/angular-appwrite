@@ -1,7 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 
 export const ProjectActions = {
-  fetch: createAction('[Auth] Projects'),
+  fetch: createAction(
+    '[Auth] Projects',
+    props<{ limit: number; offset: number }>(),
+  ),
   fetchSuccess: createAction('[Auth] Projects Success', props<{ data: any }>()),
   fetchFailure: createAction(
     '[Auth] Projects Failure',

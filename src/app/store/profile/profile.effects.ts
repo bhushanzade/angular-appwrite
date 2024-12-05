@@ -2,13 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap } from 'rxjs';
 import { ProfileActions } from './profile.action';
-import { FirestoreService } from '../../services/firestore.service';
 import { AppwriteDBService } from '../../services/appwrite-db.service';
 
 @Injectable()
 export class ProfileEffects {
   private actions$ = inject(Actions);
-  private firestore = inject(FirestoreService);
   private appwrite = inject(AppwriteDBService);
 
   profile$ = createEffect(() =>
@@ -16,7 +14,7 @@ export class ProfileEffects {
       ofType(ProfileActions.profile),
       switchMap(({ id }) =>
         this.appwrite
-          .getDocument('67348e7f0030d5201c3a', id)
+          .getDocument('users', id)
           .then((res) => {
             return ProfileActions.profileSuccess({ data: res });
           })
@@ -32,12 +30,53 @@ export class ProfileEffects {
       ofType(ProfileActions.updateProfile),
       switchMap(({ id, data }) =>
         this.appwrite
-          .updateDocument('67348e7f0030d5201c3a', id, data)
+          .updateDocument('users', id, data)
           .then((res) => {
             return ProfileActions.updateProfileSuccess({ data: res });
           })
           .catch((error) => {
             return ProfileActions.updateProfileFailure({
+              error: error.message,
+            });
+          }),
+      ),
+    ),
+  );
+
+  updateProfilePic$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ProfileActions.updateProfilePic),
+      switchMap(({ uid, storageId, file }) =>
+        this.appwrite
+          .uploadFile(file, storageId)
+          .then((res) => {
+            console.log('file res', res);
+            return ProfileActions.updateProfile({
+              id: uid,
+              data: { pic: res.$id },
+            });
+          })
+          .catch((error) => {
+            return ProfileActions.updateProfilePicFailure({
+              error: error.message,
+            });
+          }),
+      ),
+    ),
+  );
+
+  getProfilePic$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ProfileActions.getProfilePic),
+      switchMap(({ storageId, fileId }) =>
+        this.appwrite
+          .getFile(fileId, storageId)
+          .then((res) => {
+            console.log('file res', res);
+            return ProfileActions.getProfilePicSuccess({ data: res });
+          })
+          .catch((error) => {
+            return ProfileActions.updateProfilePicFailure({
               error: error.message,
             });
           }),

@@ -22,4 +22,24 @@ export const ProfileActions = {
     '[Auth] Update Profile Failure',
     props<{ error: any }>(),
   ),
+  updateProfilePic: createAction(
+    '[Auth] Update Profile Image',
+    props<{ uid: string; storageId: string; file: File }>(),
+  ),
+  updateProfilePicFailure: createAction(
+    '[Auth] Update Profile Image Failure',
+    props<{ error: any }>(),
+  ),
+  getProfilePic: createAction(
+    '[Auth] Get Profile Image',
+    props<{ storageId: string; fileId: string }>(),
+  ),
+  getProfilePicSuccess: createAction(
+    '[Auth] Get Profile Image',
+    props<{ data: any }>(),
+  ),
+  getProfilePicFailure: createAction(
+    '[Auth] Get Profile Image Failed',
+    props<{ error: any }>(),
+  ),
 };

@@ -19,7 +19,7 @@
         class="h-8 w-8 rounded-full"
         [src]="picture"
         alt="Picture"
-        (error)="picture = staticPhoto"
+        (error)="onImageError($event)"
       />
     </button>
   </div>
