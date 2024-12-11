@@ -25,7 +25,6 @@ export class ChatMessagesComponent {
   receiver: any = {};
   messages: any[] = [];
   staticPhoto: string = this.appWriteDB.staticPhoto;
-  idleTime = 100000; // 5 minutes
 
   ngOnInit() {
     this.store.dispatch(UserActions.fetchById({ id: this.userId }));

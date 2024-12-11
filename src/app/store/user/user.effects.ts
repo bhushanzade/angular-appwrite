@@ -4,6 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap } from 'rxjs/operators';
 import { UserActions } from './user.action';
 import { AppwriteDBService } from '../../services/appwrite-db.service';
+import { Query } from 'appwrite';
 
 @Injectable()
 export class UserEffects {
@@ -13,9 +14,11 @@ export class UserEffects {
   fetch$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.fetch),
-      switchMap(({ limit, offset }) =>
+      switchMap(({ currentUser, limit, offset }) =>
         this.appwrite
-          .getCollection('users', limit, offset)
+          .getCollection('users', limit, offset, [
+            Query.notEqual('$id', currentUser),
+          ])
           .then((res) => {
             return UserActions.fetchSuccess({ data: res });
           })

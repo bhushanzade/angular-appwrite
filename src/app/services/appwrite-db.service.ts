@@ -23,6 +23,7 @@ export class AppwriteDBService {
     const res = await (() => {
       if (typeof limit == 'number' && typeof offset == 'number') {
         return databases.listDocuments(this.databaseId, collectionId, [
+          ...conditions,
           Query.limit(limit ?? 10),
           Query.offset(offset),
         ]);

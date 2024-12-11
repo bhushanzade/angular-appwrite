@@ -3,7 +3,7 @@ import { createAction, props } from '@ngrx/store';
 export const UserActions = {
   fetch: createAction(
     '[Auth] Users',
-    props<{ limit: number; offset: number }>(),
+    props<{ currentUser: string; limit: number; offset: number }>(),
   ),
   fetchSuccess: createAction('[Auth] Users Success', props<{ data: any }>()),
   fetchFailure: createAction('[Auth] Users Failure', props<{ error: any }>()),
